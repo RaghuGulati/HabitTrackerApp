@@ -26,7 +26,7 @@ class _DashboardState extends State<Dashboard> {
 
           // Create a grid with 2 columns. If you change the scrollDirection to
           // horizontal, this produces 2 rows.
-          crossAxisCount: 2,
+          crossAxisCount: 6,
           // Generate 100 widgets that display their index in the List.
           children: List.generate(choices.length, (index) {
             return Center(
@@ -70,22 +70,24 @@ class SelectCard extends StatelessWidget {
   
   @override  
   Widget build(BuildContext context) {  
-    return Card(
-        color: Colors.lightGreenAccent,  
-        child: InkWell(
-          onTap: () {
-            Navigator.of(context).pushReplacementNamed(choice.routePath);
-          },
-          child: Center(child: Column(  
-              mainAxisSize: MainAxisSize.min,  
-              crossAxisAlignment: CrossAxisAlignment.center,  
-              children: <Widget>[  
-                Expanded(child: Icon(choice.icon, size:50.0, color: Colors.black)),  
-                Text(choice.title, style: dashboardTheme.textTheme.bodyText2),  
-              ]  
-          ),  
-          ),
-        )  
+    return Container(
+      child: Card(
+          color: Colors.lightGreenAccent,  
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(choice.routePath);
+            },
+            child: Center(child: Column(  
+                mainAxisSize: MainAxisSize.min,  
+                crossAxisAlignment: CrossAxisAlignment.center,  
+                children: <Widget>[  
+                  Expanded(child: Icon(choice.icon, size:50.0, color: Colors.black)),  
+                  Text(choice.title, style: dashboardTheme.textTheme.bodyText2),  
+                ]  
+            ),  
+            ),
+          )  
+      ),
     );  
   }  
 }  
