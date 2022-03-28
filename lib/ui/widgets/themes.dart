@@ -13,15 +13,25 @@ ThemeData mainTheme = ThemeData(
       );
 
 ThemeData dashboardTheme = ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.red  ,
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+           minimumSize: const Size(550,50),
+          ),
+        ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.all(12.0),
-            primary: Colors.lightGreenAccent,
+            primary: Colors.orange,
             minimumSize: const Size(500, 50),
           ),
         ),
-        textTheme: TextTheme(bodyText2: TextStyle(fontSize: 20, color: Colors.black )),
+        textTheme: TextTheme(
+          bodyText2: TextStyle(fontSize: 30, color: Colors.black),
+          bodyText1: TextStyle(fontSize: 30, color: Colors.white),
+          
+          ),
+        //textTheme: TextTheme(bodyText2: TextStyle(fontSize: 30, color: Colors.white )),
       );
 
 ThemeData loginTheme = ThemeData(

@@ -2,6 +2,8 @@ import 'package:habittrackerapp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:habittrackerapp/ui/widgets/themes.dart';
 import 'package:habittrackerapp/utils/routes.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({ Key? key }) : super(key: key);
@@ -11,6 +13,15 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  late final Box contactBox;
+  List<String> daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  @override
+  void initState(){
+    super.initState();
+    contactBox = Hive.box('AddHabit');
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,76 +29,89 @@ class _DashboardState extends State<Dashboard> {
       theme: dashboardTheme,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Dashboard'),
-          automaticallyImplyLeading: true,
+          title: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed(Routes.addNewHabit);
+            },
+            child: Text('Click to add new habit'),
+            ),
         ),
-        body:Center(
-          child: GridView.count(
+        body:Container(
+          decoration: new BoxDecoration(
+              color: Color(0xffffeedc),
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: 1000,
+                padding: EdgeInsets.all(25),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.all(25),
+                    child: Row(
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Text(
+                              'Watch your actions, they become your habits.',
+                              textAlign: TextAlign.left,
+                              ),
+                            Text('Watch your habits they become your character......'),
+                          ],
+                        ),
+                        Image.asset('assets/images/girl.png'),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
 
-          // Create a grid with 2 columns. If you change the scrollDirection to
-          // horizontal, this produces 2 rows.
-          crossAxisCount: 6,
-          // Generate 100 widgets that display their index in the List.
-          children: List.generate(choices.length, (index) {
-            return Center(
-              child: SelectCard(choice: choices[index]),
-           );
-          }),
+              Expanded(
+                child: SizedBox(
+                  height: 500,
+                  child: ValueListenableBuilder(
+                    valueListenable: contactBox.listenable(), 
+                    builder: (context, Box box, widget){
+                      if (box.isEmpty){
+                        return Center(
+                          child: Text(' No Habit Added '),
+                        );
+                      }
+                  
+                      else{
+                        return Container(
+                          decoration: new BoxDecoration(
+                            color: Color(0xffffeedc),
+                          ),
+                          child: ListView.builder(
+                            itemCount: box.length,
+                            itemBuilder: (context, index) {
+                              var currentBox = box;
+                              var Habit = currentBox.getAt(index)!;
+                              return Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: ListTile(
+                                  title: Text(Habit.HabitName),
+                                  subtitle: Text(Habit.Frequency.join(","))
+                                ),
+                              );
+                            },
+                          
+                            ),
+                        );
+                      }
+                    }
+                    ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
       ),);}}
 
 
-class Choice {  
-  final String title;  
-  final IconData icon;
-  final String routePath;  
-  const Choice({required this.title, required this.icon, required this.routePath});  
-}  
-  
-/*List<String> options = [
-    "Add New Habit",
-    "Enter/Edit weight/height details",
-    "BMI",
-    "Progress Details",
-    "Progress Chart/Graph",
-    "EDIT Account Details",
-  ]; 
-*/
-
-List<Choice> choices = const <Choice>[  
-  Choice(title: 'Add New Habit', icon: Icons.add, routePath: Routes.addNewHabit),  
-  Choice(title: 'Enter/Edit weight/height details', icon: Icons.person_pin, routePath: 'Routes.addEditDetails'),  
-  Choice(title: 'BMI', icon: Icons.power, routePath: ''),  
-  Choice(title: 'Progress Details', icon: Icons.auto_graph, routePath: ''),  
-  Choice(title: 'Progress Chart/Graph', icon: Icons.bar_chart, routePath: ''),  
-  Choice(title: 'Edit Account Details', icon: Icons.contacts, routePath: ''),  
-];  
-  
-class SelectCard extends StatelessWidget {  
-  const SelectCard({Key? key, required this.choice}) : super(key: key);  
-  final Choice choice;  
-  
-  @override  
-  Widget build(BuildContext context) {  
-    return Container(
-      child: Card(
-          color: Colors.lightGreenAccent,  
-          child: InkWell(
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(choice.routePath);
-            },
-            child: Center(child: Column(  
-                mainAxisSize: MainAxisSize.min,  
-                crossAxisAlignment: CrossAxisAlignment.center,  
-                children: <Widget>[  
-                  Expanded(child: Icon(choice.icon, size:50.0, color: Colors.black)),  
-                  Text(choice.title, style: dashboardTheme.textTheme.bodyText2),  
-                ]  
-            ),  
-            ),
-          )  
-      ),
-    );  
-  }  
-}  

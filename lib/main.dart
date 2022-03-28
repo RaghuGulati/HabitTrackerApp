@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:habittrackerapp/models/appmodels.dart';
 import 'package:habittrackerapp/ui/widgets/themes.dart';
 import 'package:habittrackerapp/utils/routes.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  
+  Hive.registerAdapter(AddHabitAdapter());
+  await Hive.openBox('AddHabit');
   runApp(const MyApp());
 }
 
@@ -39,21 +48,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Welcome',
+            const Text(
+              'Welcome to Habit Tracker',
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pushReplacementNamed(Routes.dashboard);
               }, 
-              child: Text(
+              child: const Text(
                 'CLICK TO LOGIN!!!!', 
                 style: TextStyle(color: Colors.black),
                 ),
